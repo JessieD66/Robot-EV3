@@ -60,14 +60,19 @@ public class Robot2 {
 
 	public void findOrientations() {
 		int color = colorSensorSide.getColorID();
-		if (orientations[0] == 0 && color != Color.NONE  ) {
-			orientations[0] = color;
-		} else if (orientations[1] == 0 && color != Color.NONE && color != orientations[0]) {
-			orientations[1] = color;
-		} else if (orientations[2] == 0 && color != Color.NONE && color != orientations[0] && color != orientations[1]) {
-			orientations[2] = color;
-		} else if (orientations[3] == 0 && color != Color.NONE && color != orientations[0] && color != orientations[1] && color != orientations[2]) {
-			orientations[3] = color;
+		if (color != Color.NONE) {
+			if (orientations[0] == 0) {
+				orientations[0] = color;
+			}
+			else if (orientations[1] == 0 && color != orientations[0]) {
+				orientations[1] = color;
+			}
+			else if (orientations[2] == 0 && color != orientations[1]) {
+				orientations[2] = color;
+			}
+			else if (orientations[3] == 0 && color != orientations[2]) {
+				orientations[3] = color;
+			}
 		}
 	}
 }
