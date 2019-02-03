@@ -32,14 +32,14 @@ public class Robot2 {
 		Robot2 robot = new Robot2();
 		LCD.drawString("running", 0, 0);
 		Button.ENTER.waitForPress();
-		while (Button.RIGHT.isUp()) {
+		while (orientations[3] == 0) {
 			robot.followLine();
 			robot.findOrientations();
 		}
-		LCD.drawInt(orientations[0], 0, 1);
-		LCD.drawInt(orientations[1], 0, 2);
-		LCD.drawInt(orientations[2], 0, 3);
-		LCD.drawInt(orientations[3], 0, 4);
+		LCD.drawString( "East " + orientations[0], 0, 1);
+		LCD.drawString( "South " + orientations[1], 0, 2);
+		LCD.drawString( "West " + orientations[2], 0, 3);
+		LCD.drawString( "North " + orientations[3], 0, 4);
 	}
 
 	public void followLine() {
@@ -59,13 +59,14 @@ public class Robot2 {
 	}
 
 	public void findOrientations() {
-		if (orientations[0] == 0 && colorSensorSide.getColorID() != Color.NONE) {
-			orientations[0] = colorSensorSide.getColorID();
-		} else if (orientations[1] == 0 && colorSensorSide.getColorID() != Color.NONE) {
+		int color = colorSensorSide.getColorID();
+		if (orientations[0] == 0 && color != Color.NONE  ) {
+			orientations[0] = ;
+		} else if (orientations[1] == 0 && color != Color.NONE && color != orientations[0]) {
 			orientations[1] = colorSensorSide.getColorID();
-		} else if (orientations[2] == 0 && colorSensorSide.getColorID() != Color.NONE) {
+		} else if (orientations[2] == 0 && color != Color.NONE && color != orientations[0] && color != orientations[1]) {
 			orientations[2] = colorSensorSide.getColorID();
-		} else if (orientations[3] == 0 && colorSensorSide.getColorID() != Color.NONE) {
+		} else if (orientations[3] == 0 && color != Color.NONE && color != orientations[0] && color != orientations[1] && color != orientations[2]) {
 			orientations[3] = colorSensorSide.getColorID();
 		}
 	}
