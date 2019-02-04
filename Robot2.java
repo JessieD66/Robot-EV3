@@ -64,14 +64,20 @@ public class Robot2 {
 			if (orientations[0] == 0) {
 				orientations[0] = color;
 			}
-			else if (orientations[1] == 0 && color != orientations[0]) {
-				orientations[1] = color;
-			}
-			else if (orientations[2] == 0 && color != orientations[1]) {
-				orientations[2] = color;
-			}
-			else if (orientations[3] == 0 && color != orientations[2]) {
-				orientations[3] = color;
+			else if (color != orientations[0]) {
+				if (orientations[1] == 0) {
+					orientations[1] = color;
+				}
+				else if (color != orientations[1]) {
+					if (orientations[2] == 0) {
+						orientations[2] = color;
+					}
+					else if (color != orientations[2]) {
+						if (orientations[3] == 0) {
+							orientations[3] = color;
+						}
+					}
+				}
 			}
 		}
 	}
