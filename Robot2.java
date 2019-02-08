@@ -16,7 +16,7 @@ public class Robot2 {
 	EV3ColorSensor colorSensorRight;
 	EV3ColorSensor colorSensorFront;
 	EV3ColorSensor colorSensorSide;
-	static String[] orientations = { "", "", "", "" }; //index: 0: east, 1: south, 2: west, 3: north
+	String[] orientations;
 
 	Robot2() {
 		this.motorArm = new EV3MediumRegulatedMotor(MotorPort.A);
@@ -26,20 +26,21 @@ public class Robot2 {
 		this.colorSensorRight = new EV3ColorSensor(SensorPort.S2);
 		this.colorSensorFront = new EV3ColorSensor(SensorPort.S3);
 		this.colorSensorSide = new EV3ColorSensor(SensorPort.S4);
+		this.orientations = new String[]{ "", "", "", "" }; //index: 0: east, 1: south, 2: west, 3: north
 	}
 
 	public static void main(String[] args) {
 		Robot2 robot = new Robot2();
 		LCD.drawString("running, press enter...", 0, 0);
 		Button.ENTER.waitForPress();
-		while (orientations[3] == "") {
+		while (robot.orientations[3] == "") {
 			robot.followLine();
 			robot.findOrientations();
 		}
-		LCD.drawString( "East " + orientations[0] + " to turn: " + toTurn(orientations[0], 0), 0, 1);
-		LCD.drawString( "South " + orientations[1] + " to turn: " + toTurn(orientations[1], 1), 0, 2);
-		LCD.drawString( "West " + orientations[2] + " to turn: " + toTurn(orientations[2], 2), 0, 3);
-		LCD.drawString( "North " + orientations[3] + " to turn: " + toTurn(orientations[3], 3), 0, 4);
+		LCD.drawString( "East " + robot.orientations[0] + " to turn: " + robot.toTurn(robot.orientations[0], 0), 0, 1);
+		LCD.drawString( "South " + robot.orientations[1] + " to turn: " + robot.toTurn(robot.orientations[1], 1), 0, 2);
+		LCD.drawString( "West " + robot.orientations[2] + " to turn: " + robot.toTurn(robot.orientations[2], 2), 0, 3);
+		LCD.drawString( "North " + robot.orientations[3] + " to turn: " + robot.toTurn(robot.orientations[3], 3), 0, 4);
 	}
 
 	public void followLine() {
@@ -96,7 +97,7 @@ public class Robot2 {
 		
 	}
 	
-	public static boolean toTurn(String color, int orientation) {
+	public boolean toTurn(String color, int orientation) {
 		// first index: orientation East, South, West, North
 		// second index: color red, green, blue, yellow
 		int colorIndex = 0;
