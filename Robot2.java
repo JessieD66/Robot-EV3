@@ -37,10 +37,15 @@ public class Robot2 {
 			robot.followLine();
 			robot.findOrientations();
 		}
-		LCD.drawString( "East " + robot.orientations[0] + " to turn: " + robot.toTurn(robot.orientations[0], 0), 0, 1);
-		LCD.drawString( "South " + robot.orientations[1] + " to turn: " + robot.toTurn(robot.orientations[1], 1), 0, 2);
-		LCD.drawString( "West " + robot.orientations[2] + " to turn: " + robot.toTurn(robot.orientations[2], 2), 0, 3);
-		LCD.drawString( "North " + robot.orientations[3] + " to turn: " + robot.toTurn(robot.orientations[3], 3), 0, 4);
+		LCD.drawString( "East " + robot.orientations[0], 0, 1);
+		LCD.drawString( "South " + robot.orientations[1], 0, 2);
+		LCD.drawString( "West " + robot.orientations[2], 0, 3);
+		LCD.drawString( "North " + robot.orientations[3], 0, 4);
+		LCD.drawString( "Turn Red:  " + robot.toTurn("RED"), 0, 5);
+		LCD.drawString( "Turn Green:  " + robot.toTurn("GREEN"), 0, 6);
+		LCD.drawString( "Turn Blue:  " + robot.toTurn("BLUE"), 0, 7);
+		LCD.drawString( "Turn Yellow:  " + robot.toTurn("YELLOW"), 0, 8);
+		Button.ENTER.waitForPress();
 	}
 
 	public void followLine() {
@@ -97,10 +102,14 @@ public class Robot2 {
 		
 	}
 	
-	public boolean toTurn(String color, int orientation) {
-		// first index: orientation East, South, West, North
-		// second index: color red, green, blue, yellow
+	public boolean toTurn(String color) {
 		int colorIndex = 0;
+		int orientationIndex = 0;
+		for (int i = 0; i < 4; i++) {
+			if (color == this.orientations[i]) {
+				orientationIndex = i;
+			}
+		}
 		switch(color) {
 		case "RED":
 			colorIndex = 0;
@@ -115,8 +124,10 @@ public class Robot2 {
 			colorIndex = 3;
 			break;
 		}
+		// first index: orientation East, South, West, North
+		// second index: color red, green, blue, yellow
 		boolean[][] turnmatrix = {{true, false, true, false}, {true, true, false, false}, {false, true, true, false}, {true, true, false, false}};
-		return turnmatrix[orientation][colorIndex];
+		return turnmatrix[orientationIndex][colorIndex];
 	}
 
 	public void findOrientations() {
