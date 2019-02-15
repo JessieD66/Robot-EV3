@@ -26,25 +26,26 @@ public class Robot2 {
 		this.colorSensorRight = new EV3ColorSensor(SensorPort.S2);
 		this.colorSensorFront = new EV3ColorSensor(SensorPort.S3);
 		this.colorSensorSide = new EV3ColorSensor(SensorPort.S4);
-		this.orientations = new String[]{ "", "", "", "" }; //index: 0: east, 1: south, 2: west, 3: north
+		this.orientations = new String[] { "", "", "", "" }; // index: 0: east, 1: south, 2: west, 3: north
 	}
 
 	public static void main(String[] args) {
 		Robot2 robot = new Robot2();
+		robot.colorSensorSide.setFloodlight(Color.WHITE);
 		LCD.drawString("running, press enter...", 0, 0);
 		Button.ENTER.waitForPress();
 		while (robot.orientations[3] == "") {
 			robot.followLine();
 			robot.findOrientations();
 		}
-		LCD.drawString( "East " + robot.orientations[0], 0, 1);
-		LCD.drawString( "South " + robot.orientations[1], 0, 2);
-		LCD.drawString( "West " + robot.orientations[2], 0, 3);
-		LCD.drawString( "North " + robot.orientations[3], 0, 4);
-		LCD.drawString( "Turn Red:  " + robot.toTurn("RED"), 0, 5);
-		LCD.drawString( "Turn Green:  " + robot.toTurn("GREEN"), 0, 6);
-		LCD.drawString( "Turn Blue:  " + robot.toTurn("BLUE"), 0, 7);
-		LCD.drawString( "Turn Yellow:  " + robot.toTurn("YELLOW"), 0, 8);
+		LCD.drawString("East " + robot.orientations[0], 0, 0);
+		LCD.drawString("South " + robot.orientations[1], 0, 1);
+		LCD.drawString("West " + robot.orientations[2], 0, 2);
+		LCD.drawString("North " + robot.orientations[3], 0, 3);
+		LCD.drawString("Turn Red:  " + robot.toTurn("RED"), 0, 4);
+		LCD.drawString("Turn Green:  " + robot.toTurn("GREEN"), 0, 5);
+		LCD.drawString("Turn Blue:  " + robot.toTurn("BLUE"), 0, 6);
+		LCD.drawString("Turn Yellow:  " + robot.toTurn("YELLOW"), 0, 7);
 		Button.ENTER.waitForPress();
 	}
 
@@ -63,45 +64,66 @@ public class Robot2 {
 		}
 
 	}
-	
+
 	public int getColorId(String color) {
 		int id = -1;
-		switch(color) {
+		switch (color) {
 		case "RED":
-			id =  Color.RED;
+			id = Color.RED;
 			break;
 		case "GREEN":
-			id =  Color.GREEN;
+			id = Color.GREEN;
 			break;
 		case "BLUE":
-			id =  Color.BLUE;
+			id = Color.BLUE;
 			break;
 		case "YELLOW":
-			id =  Color.YELLOW;
+			id = Color.YELLOW;
 			break;
-		}	
+		}
 		return id;
 	}
+
 	public String getColorName(int id) {
 		String name = "";
-		switch(id)  {
-		case Color.RED: 
+		switch (id) {
+		case Color.RED:
 			name = "RED";
 			break;
-		case Color.GREEN: 
+		case Color.GREEN:
 			name = "GREEN";
 			break;
-		case Color.BLUE: 
+		case Color.BLUE:
 			name = "BLUE";
 			break;
-		case Color.YELLOW: 
+		case Color.YELLOW:
 			name = "YELLOW";
 			break;
 		}
 		return name;
-		
 	}
-	
+
+	public void findOrientations() {
+		int color = colorSensorSide.getColorID();
+		if (color != Color.NONE) {
+			if (orientations[0] == "") {
+				orientations[0] = getColorName(color);
+			} else if (color != getColorId(orientations[0])) {
+				if (orientations[1] == "") {
+					orientations[1] = getColorName(color);
+				} else if (color != getColorId(orientations[1])) {
+					if (orientations[2] == "") {
+						orientations[2] = getColorName(color);
+					} else if (color != getColorId(orientations[2])) {
+						if (orientations[3] == "") {
+							orientations[3] = getColorName(color);
+						}
+					}
+				}
+			}
+		}
+	}
+
 	public boolean toTurn(String color) {
 		int colorIndex = 0;
 		int orientationIndex = 0;
@@ -110,7 +132,7 @@ public class Robot2 {
 				orientationIndex = i;
 			}
 		}
-		switch(color) {
+		switch (color) {
 		case "RED":
 			colorIndex = 0;
 			break;
@@ -126,31 +148,7 @@ public class Robot2 {
 		}
 		// first index: orientation East, South, West, North
 		// second index: color red, green, blue, yellow
-		boolean[][] turnmatrix = {{true, false, true, false}, {true, true, false, false}, {false, true, true, false}, {true, true, false, false}};
+		boolean[][] turnmatrix = { { true, false, true, false }, { true, true, false, false }, { false, true, true, false }, { true, true, false, false } };
 		return turnmatrix[orientationIndex][colorIndex];
-	}
-
-	public void findOrientations() {
-		int color = colorSensorSide.getColorID();
-		if (color != Color.NONE) {
-			if (orientations[0] == "") {
-				orientations[0] = getColorName(color);
-			}
-			else if (color != getColorId(orientations[0])) {
-				if (orientations[1] == "") {
-					orientations[1] = getColorName(color);
-				}
-				else if (color != getColorId(orientations[1])) {
-					if (orientations[2] == "") {
-						orientations[2] = getColorName(color);
-					}
-					else if (color != getColorId(orientations[2])) {
-						if (orientations[3] == "") {
-							orientations[3] = getColorName(color);
-						}
-					}
-				}
-			}
-		}
 	}
 }
