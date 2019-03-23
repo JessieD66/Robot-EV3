@@ -38,22 +38,17 @@ public class Robot2 {
 		 * 4. lies Farbe des zweiten Blocks ...
 		 */
 		LCD.clear();
-		robot.drive(5000);
+		robot.drive(5000); //distance has to be tested
 		robot.orientations[0] = robot.getColorName(robot.colorSensorSide.getColorID());
-		//robot.findOrientations();
-		LCD.drawString("East " + robot.orientations[0], 0, 0);
+		LCD.drawString("East " + robot.orientations[0], 0, 0); 
 		robot.drive(3000);
 		robot.orientations[1] = robot.getColorName(robot.colorSensorSide.getColorID());
-		//robot.findOrientations();
 		LCD.drawString("South " + robot.orientations[1], 0, 1);
 		robot.drive(3000);
 		robot.orientations[2] = robot.getColorName(robot.colorSensorSide.getColorID());
-		//robot.findOrientations();
 		LCD.drawString("West " + robot.orientations[2], 0, 2);
 		robot.drive(3000);
-	
 		robot.orientations[3] = robot.getColorName(robot.colorSensorSide.getColorID());
-		//robot.findOrientations();
 		LCD.drawString("North " + robot.orientations[3], 0, 3);
 		LCD.drawString("Turn Red:  " + robot.toTurn("RED"), 0, 4);
 		LCD.drawString("Turn Green:  " + robot.toTurn("GREEN"), 0, 5);
@@ -71,7 +66,7 @@ public class Robot2 {
 		stop();
 		}
 
-	public void followLine() {
+	public void followLine() { //currently not used
 		motorLeft.setSpeed(100);
 		motorRight.setSpeed(100);
 		if (colorSensorLeft.getColorID() == Color.BLACK) {
@@ -130,7 +125,7 @@ public class Robot2 {
 		return name;
 	}
 
-	public void findOrientations() {
+	public void findOrientations() { //currently not used
 		int color = colorSensorSide.getColorID();
 		if (color != Color.NONE) {
 			if (orientations[0] == "") {
