@@ -32,7 +32,6 @@ public class Robot2 {
 
 	public static void main(String[] args) {
 		Robot2 robot = new Robot2();
-		robot.colorSensorSide.setFloodlight(Color.WHITE);
 		LCD.drawString("running, press enter...", 0, 0);
 		Button.ENTER.waitForPress();
 		LCD.clear();
@@ -43,9 +42,10 @@ public class Robot2 {
 		LCD.drawString("Turn Green:  " + robot.toTurn("GREEN"), 0, 5);
 		LCD.drawString("Turn Blue:  " + robot.toTurn("BLUE"), 0, 6);
 		LCD.drawString("Turn Yellow:  " + robot.toTurn("YELLOW"), 0, 7);
-		Delay.msDelay(2000);
-		robot.drive(-200, 500);
+		Delay.msDelay(4000); //gegen Wand
+		robot.driveback(200, 1000);
 		robot.turn('l', 950);
+		robot.drive(300, 10100);
 		robot.stop();
 		Button.ENTER.waitForPress();
 		
@@ -119,6 +119,14 @@ public class Robot2 {
 		Delay.msDelay(time);
 		}
 	
+	public void driveback(int speed, int time) {
+		motorLeft.setSpeed(speed);
+		motorRight.setSpeed(speed);
+		motorRight.backward();
+		motorLeft.backward();
+		Delay.msDelay(time);
+		}
+	
 	public void turn(char direction, int time) {
 		motorLeft.setSpeed(200);
 		motorRight.setSpeed(200);
@@ -131,8 +139,6 @@ public class Robot2 {
 			motorRight.backward();
 		}
 		Delay.msDelay(time);
-		//motorLeft.stop(true);
-		//motorRight.stop(true);
 	}
 	
 	public void stop() {
