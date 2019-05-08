@@ -45,6 +45,8 @@ public class Robot2 {
 		LCD.drawString("Turn Blue:  " + robot.toTurn("BLUE"), 0, 6);
 		LCD.drawString("Turn Yellow:  " + robot.toTurn("YELLOW"), 0, 7);
 		robot.stop();
+		Sound.beep();
+		Delay.msDelay(500);
 		robot.turn('l');
 		Sound.beep();
 		robot.drive(600);
@@ -54,13 +56,25 @@ public class Robot2 {
 		robot.drive(200);
 		LCD.clear();
 		robot.toLine();
-		LCD.drawString(robot.routerColour(robot.colorSensorSide.getColorID()), 0, 0);
-		Sound.buzz(); 
-		robot.liftRouter();
-		robot.turn('b');
-		robot.distance(400);
-		robot.turnAndDrop(robot.toTurn("RED"));
-		
+		if (robot.routerColour(robot.colorSensorSide.getColorID()) == "BLACK") {
+			Sound.buzz();
+			robot.liftRouter();
+			robot.turn('b');
+			robot.distance(360);
+			robot.turnAndDrop(robot.toTurn("RED"));
+		} 
+		else {
+			robot.drive(200);
+			Delay.msDelay(500);
+			robot.toLine();
+			robot.liftRouter();
+			robot.turn('l');
+			robot.driveback(200);
+			robot.toLine();
+			robot.turn('l');
+			robot.distance(360);
+			robot.turnAndDrop(robot.toTurn("RED"));
+		}
 		Button.ENTER.waitForPress();
 	}
 	
@@ -83,17 +97,17 @@ public class Robot2 {
 		motorLeft.rotate(270, true);
 		motorRight.rotate(270);
 		Delay.msDelay(100);
-		motorRight.rotate(-360);
-		motorRight.rotate(-90, true);
-		motorLeft.rotate(-90);
+		motorRight.rotate(-380);
+		motorRight.rotate(-120, true);
+		motorLeft.rotate(-120);
 		motorUp.setSpeed(100);
-    	motorUp.rotate(105);
+    	motorUp.rotate(110);
     	Delay.msDelay(400);
-    	motorLeft.setSpeed(100);
-    	motorRight.setSpeed(100);
+    	motorLeft.setSpeed(130);
+    	motorRight.setSpeed(130);
     	motorRight.rotate(200, true);
     	motorLeft.rotate(200);
-    	Delay.msDelay(400);
+    	Delay.msDelay(360);
     	motorUp.rotate(-50);
 	}
 	
@@ -102,31 +116,34 @@ public class Robot2 {
     	motorTurn.setSpeed(100);
     	motorTurn.rotate(angle);
     	Delay.msDelay(600);
-    	motorUp.setSpeed(50);
+    	motorUp.setSpeed(100);
     	if (angle == 90) {
-    		motorUp.setSpeed(300);
         	motorUp.rotate(50);
+        	motorTurn.setSpeed(600);
         	motorTurn.rotate(20);
         	motorTurn.rotate(-20);
         	motorTurn.rotate(20);
         	motorTurn.rotate(-20);
         	Delay.msDelay(200);
         	motorLeft.rotate(50);
+        	motorUp.rotate(-110);
+        	motorLeft.rotate(-50);
     	}
     	else if (angle == -90) {
-    		motorUp.setSpeed(300);
         	motorUp.rotate(50);
+        	motorTurn.setSpeed(600);
         	motorTurn.rotate(20);
         	motorTurn.rotate(-20);
         	motorTurn.rotate(20);
         	motorTurn.rotate(-20);
         	Delay.msDelay(200);
         	motorRight.rotate(50);
+        	motorUp.rotate(-110);
+        	motorRight.rotate(-50);
     	}
     	else if (angle == 180) {
-    		motorUp.setSpeed(300);
         	motorUp.rotate(40);
-        	motorTurn.setSpeed(200);
+        	motorTurn.setSpeed(600);
         	motorTurn.rotate(-20);
         	motorTurn.rotate(20);
         	motorTurn.rotate(-20);
@@ -134,19 +151,18 @@ public class Robot2 {
         	Delay.msDelay(200);
         	motorLeft.rotate(50);
         	motorRight.rotate(50);
+        	motorUp.rotate(-110);
     	}
     	else if (angle == 0) {
-    		motorUp.setSpeed(300);
         	motorUp.rotate(40);
-        	motorTurn.setSpeed(200);
+        	motorTurn.setSpeed(600);
         	motorTurn.rotate(200);
         	motorTurn.rotate(20);
         	motorTurn.rotate(-20);
         	motorTurn.rotate(20);
         	motorTurn.rotate(-20);
-        	Delay.msDelay(200);
+        	motorUp.rotate(-110);
     	}
-    	motorUp.rotate(-105);
     	motorTurn.rotate(-angle);
     	motorRight.rotate(-200, true);
     	motorLeft.rotate(-200);
@@ -217,26 +233,25 @@ public class Robot2 {
 		motorLeft.forward();
 	}
 
-	public void driveback(int speed, int time) {
+	public void driveback(int speed) {
 		motorLeft.setSpeed(speed);
 		motorRight.setSpeed(speed);
 		motorRight.backward();
 		motorLeft.backward();
-		Delay.msDelay(time);
 	}
 
 	public void turn(char direction) {
 		motorLeft.setSpeed(200);
 		motorRight.setSpeed(200);
 		if (direction == 'l') {
-			motorLeft.rotate(-180, true);
-			motorRight.rotate(180);
+			motorLeft.rotate(-195, true);
+			motorRight.rotate(195);
 		} else if (direction == 'r') {
-			motorLeft.rotate(180, true);
-			motorRight.rotate(-180);
+			motorLeft.rotate(195, true);
+			motorRight.rotate(-195);
 		} else if (direction == 'b') {
-			motorLeft.rotate(330, true);
-			motorRight.rotate(-330);
+			motorLeft.rotate(370, true);
+			motorRight.rotate(-370);
 		}
 	}
 
@@ -262,7 +277,6 @@ public class Robot2 {
 	public void followLine(int crossleft) {
 		drive(300);
 		long startTime = System.currentTimeMillis();
-		int count = 0;
 		while (System.currentTimeMillis() - startTime < 10100) {
 			/*
 			 * } else if (colorSensorLeft.getColorID() == Color.BLACK &&
