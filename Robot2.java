@@ -14,19 +14,21 @@ public class Robot2 {
 	EV3MediumRegulatedMotor motorTurn;
 	EV3LargeRegulatedMotor motorLeft;
 	EV3LargeRegulatedMotor motorRight;
-	//EV3ColorSensor colorSensorDown;
-	//EV3ColorSensor colorSensorRight;
+	EV3ColorSensor colorSensorMiddle;
+	EV3ColorSensor colorSensorRight;
+	EV3ColorSensor colorSensorLeft;
 	EV3ColorSensor colorSensorSide;
 	String[] orientations;
 
 	Robot2() {
-		this.motorUp = new EV3MediumRegulatedMotor(MotorPort.D);
-		this.motorTurn = new EV3MediumRegulatedMotor(MotorPort.A);
-		this.motorLeft = new EV3LargeRegulatedMotor(MotorPort.B);
-		this.motorRight = new EV3LargeRegulatedMotor(MotorPort.C);
-		//this.colorSensorDown = new EV3ColorSensor(SensorPort.S1);
-		//this.colorSensorRight = new EV3ColorSensor(SensorPort.S2);
-		this.colorSensorSide = new EV3ColorSensor(SensorPort.S1);
+		this.motorUp = new EV3MediumRegulatedMotor(MotorPort.C);
+		this.motorTurn = new EV3MediumRegulatedMotor(MotorPort.D);
+		this.motorLeft = new EV3LargeRegulatedMotor(MotorPort.A);
+		this.motorRight = new EV3LargeRegulatedMotor(MotorPort.B);
+		this.colorSensorMiddle = new EV3ColorSensor(SensorPort.S2);
+		this.colorSensorRight = new EV3ColorSensor(SensorPort.S4);
+		this.colorSensorLeft = new EV3ColorSensor(SensorPort.S1);
+		this.colorSensorSide = new EV3ColorSensor(SensorPort.S3);
 		this.orientations = new String[] { "", "", "", "" }; // index: 0: east, 1: south, 2: west, 3: north
 	}
 
@@ -35,7 +37,7 @@ public class Robot2 {
 		LCD.drawString("running, press enter...", 0, 0);
 		Button.ENTER.waitForPress();
 		LCD.clear();
-		robot.drive(200, 0);
+		robot.drive(200);
 		robot.measureOrientations();
 		Sound.buzz();
 		LCD.drawString("Turn Red:  " + robot.toTurn("RED"), 0, 4);
@@ -44,18 +46,112 @@ public class Robot2 {
 		LCD.drawString("Turn Yellow:  " + robot.toTurn("YELLOW"), 0, 7);
 		robot.stop();
 		robot.turn('l');
-		robot.drive(300, 10200);
+		Sound.beep();
+		robot.drive(600);
+		Delay.msDelay(5300);
 		robot.stop();
 		robot.turn('l');
-		robot.drive(200, 1600);
-		robot.stop();
+		robot.drive(200);
 		LCD.clear();
+		robot.toLine();
 		LCD.drawString(robot.routerColour(robot.colorSensorSide.getColorID()), 0, 0);
-		Sound.buzz();
-		Button.ENTER.waitForPress();
+		Sound.buzz(); 
+		robot.liftRouter();
+		robot.turn('b');
+		robot.distance(400);
+		robot.turnAndDrop(robot.toTurn("RED"));
 		
+		Button.ENTER.waitForPress();
 	}
 	
+	public void distance(int angle) {
+		motorRight.rotate(angle, true);
+		motorLeft.rotate(angle);
+	}
+
+	public void toLine() {
+		while (true) {
+			if (colorSensorLeft.getColorID() != Color.WHITE && colorSensorMiddle.getColorID() != Color.WHITE
+					&& colorSensorRight.getColorID() != Color.WHITE) {
+				stop();
+				break;
+			}
+		}
+	}
+
+	public void liftRouter() {
+		motorLeft.rotate(270, true);
+		motorRight.rotate(270);
+		Delay.msDelay(100);
+		motorRight.rotate(-360);
+		motorRight.rotate(-90, true);
+		motorLeft.rotate(-90);
+		motorUp.setSpeed(100);
+    	motorUp.rotate(105);
+    	Delay.msDelay(400);
+    	motorLeft.setSpeed(100);
+    	motorRight.setSpeed(100);
+    	motorRight.rotate(200, true);
+    	motorLeft.rotate(200);
+    	Delay.msDelay(400);
+    	motorUp.rotate(-50);
+	}
+	
+	public void turnAndDrop(int angle)
+	{
+    	motorTurn.setSpeed(100);
+    	motorTurn.rotate(angle);
+    	Delay.msDelay(600);
+    	motorUp.setSpeed(50);
+    	if (angle == 90) {
+    		motorUp.setSpeed(300);
+        	motorUp.rotate(50);
+        	motorTurn.rotate(20);
+        	motorTurn.rotate(-20);
+        	motorTurn.rotate(20);
+        	motorTurn.rotate(-20);
+        	Delay.msDelay(200);
+        	motorLeft.rotate(50);
+    	}
+    	else if (angle == -90) {
+    		motorUp.setSpeed(300);
+        	motorUp.rotate(50);
+        	motorTurn.rotate(20);
+        	motorTurn.rotate(-20);
+        	motorTurn.rotate(20);
+        	motorTurn.rotate(-20);
+        	Delay.msDelay(200);
+        	motorRight.rotate(50);
+    	}
+    	else if (angle == 180) {
+    		motorUp.setSpeed(300);
+        	motorUp.rotate(40);
+        	motorTurn.setSpeed(200);
+        	motorTurn.rotate(-20);
+        	motorTurn.rotate(20);
+        	motorTurn.rotate(-20);
+        	motorTurn.rotate(20);
+        	Delay.msDelay(200);
+        	motorLeft.rotate(50);
+        	motorRight.rotate(50);
+    	}
+    	else if (angle == 0) {
+    		motorUp.setSpeed(300);
+        	motorUp.rotate(40);
+        	motorTurn.setSpeed(200);
+        	motorTurn.rotate(200);
+        	motorTurn.rotate(20);
+        	motorTurn.rotate(-20);
+        	motorTurn.rotate(20);
+        	motorTurn.rotate(-20);
+        	Delay.msDelay(200);
+    	}
+    	motorUp.rotate(-105);
+    	motorTurn.rotate(-angle);
+    	motorRight.rotate(-200, true);
+    	motorLeft.rotate(-200);
+	}
+
 	public String routerColour(int id) {
 		String name = "";
 		switch (id) {
@@ -71,97 +167,125 @@ public class Robot2 {
 		}
 		return name;
 	}
-	
-	
+
 	public void measureOrientations() {
 		long startTime = System.currentTimeMillis();
-		while (System.currentTimeMillis() - startTime < 8100) {
+		while (colorSensorLeft.getColorID() == Color.WHITE || System.currentTimeMillis() - startTime < 7000) {
 			if (System.currentTimeMillis() - startTime > 3050 && System.currentTimeMillis() - startTime < 3150) {
 				int color = colorSensorSide.getColorID();
 				if (getColorName(color) != orientations[0] && getColorName(color) != "") {
 					orientations[0] = getColorName(color);
 					Sound.beep();
-					LCD.drawString(orientations[0], 0, 0); 
+					LCD.drawString(orientations[0], 0, 0);
 				}
-			}
-			else if (System.currentTimeMillis() - startTime > 3900 && System.currentTimeMillis() - startTime < 4000) {
+			} else if (System.currentTimeMillis() - startTime > 3900 && System.currentTimeMillis() - startTime < 4000) {
 				int color = colorSensorSide.getColorID();
-				if (getColorName(color) != orientations[1] && getColorName(color) != "" && getColorName(color) != orientations[0]) {
+				if (getColorName(color) != orientations[1] && getColorName(color) != ""
+						&& getColorName(color) != orientations[0]) {
 					orientations[1] = getColorName(color);
 					Sound.beep();
-					LCD.drawString(orientations[1], 0, 1); 
+					LCD.drawString(orientations[1], 0, 1);
 				}
-			}
-			else if (System.currentTimeMillis() - startTime > 4700 && System.currentTimeMillis() - startTime < 4800) {
+			} else if (System.currentTimeMillis() - startTime > 4700 && System.currentTimeMillis() - startTime < 4800) {
 				int color = colorSensorSide.getColorID();
-				if (getColorName(color) != orientations[2] && getColorName(color) != "" && getColorName(color) != orientations[0] && getColorName(color) != orientations[1]) {
+				if (getColorName(color) != orientations[2] && getColorName(color) != ""
+						&& getColorName(color) != orientations[0] && getColorName(color) != orientations[1]) {
 					orientations[2] = getColorName(color);
 					Sound.beep();
-					LCD.drawString(orientations[2], 0, 2); 
+					LCD.drawString(orientations[2], 0, 2);
 				}
 			}
 			if (System.currentTimeMillis() - startTime > 5650 && System.currentTimeMillis() - startTime < 5750) {
 				int color = colorSensorSide.getColorID();
-				if (getColorName(color) != orientations[3] && getColorName(color) != "" && getColorName(color) != orientations[0] && getColorName(color) != orientations[1] && getColorName(color) != orientations[2]) {
+				if (getColorName(color) != orientations[3] && getColorName(color) != ""
+						&& getColorName(color) != orientations[0] && getColorName(color) != orientations[1]
+						&& getColorName(color) != orientations[2]) {
 					orientations[3] = getColorName(color);
 					Sound.beep();
-					LCD.drawString(orientations[3], 0, 3); 
+					LCD.drawString(orientations[3], 0, 3);
 				}
 			}
 			Delay.msDelay(5);
 		}
+		distance(200);
 	}
 
-	
-	public void drive(int speed, int time) {
+	public void drive(int speed) {
 		motorLeft.setSpeed(speed);
 		motorRight.setSpeed(speed);
 		motorRight.forward();
 		motorLeft.forward();
-		Delay.msDelay(time);
-		}
-	
+	}
+
 	public void driveback(int speed, int time) {
 		motorLeft.setSpeed(speed);
 		motorRight.setSpeed(speed);
 		motorRight.backward();
 		motorLeft.backward();
 		Delay.msDelay(time);
-		}
-	
+	}
+
 	public void turn(char direction) {
 		motorLeft.setSpeed(200);
 		motorRight.setSpeed(200);
 		if (direction == 'l') {
 			motorLeft.rotate(-180, true);
 			motorRight.rotate(180);
-		}
-		else if (direction == 'r') {
+		} else if (direction == 'r') {
 			motorLeft.rotate(180, true);
 			motorRight.rotate(-180);
+		} else if (direction == 'b') {
+			motorLeft.rotate(330, true);
+			motorRight.rotate(-330);
 		}
 	}
-	
+
 	public void stop() {
 		motorLeft.stop(true);
 		motorRight.stop(true);
 	}
-	/*
-	public void followLine() { //currently not used
-		motorLeft.setSpeed(100);
-		motorRight.setSpeed(100);
-		if (colorSensorLeft.getColorID() == Color.BLACK) {
-			motorLeft.backward();
-			motorRight.forward();
-		} else if (colorSensorRight.getColorID() == Color.BLACK) {
-			motorRight.backward();
-			motorLeft.forward();
-		} else {
-			motorRight.forward();
-			motorLeft.forward();
+
+	public void findLine() {
+		drive(200);
+		while (colorSensorMiddle.getColorID() != Color.BLACK || colorSensorLeft.getColorID() == Color.BLACK
+				|| colorSensorRight.getColorID() == Color.BLACK) {
+			if (colorSensorLeft.getColorID() == Color.BLACK) {
+				motorRight.setSpeed(300);
+			} else if (colorSensorRight.getColorID() == Color.BLACK) {
+				motorLeft.setSpeed(300);
+			}
 		}
+		motorLeft.setSpeed(200);
+		motorRight.setSpeed(200);
 	}
-*/
+
+	public void followLine(int crossleft) {
+		drive(300);
+		long startTime = System.currentTimeMillis();
+		int count = 0;
+		while (System.currentTimeMillis() - startTime < 10100) {
+			/*
+			 * } else if (colorSensorLeft.getColorID() == Color.BLACK &&
+			 * colorSensorMiddle.getColorID() == Color.BLACK) { count++; Sound.buzz(); if
+			 * (count < crossleft) { Delay.msDelay(1000); } else { stop(); break; } }
+			 */
+			if (colorSensorRight.getColorID() == Color.BLACK && colorSensorMiddle.getColorID() != Color.BLACK) {
+				motorLeft.setSpeed(400);
+				Delay.msDelay(20);
+			}
+			if (colorSensorLeft.getColorID() == Color.BLACK && colorSensorMiddle.getColorID() != Color.BLACK) {
+				motorRight.setSpeed(400);
+				Delay.msDelay(20);
+			} else if (colorSensorMiddle.getColorID() == Color.BLACK && colorSensorRight.getColorID() != Color.BLACK
+					&& colorSensorLeft.getColorID() != Color.BLACK) {
+				motorLeft.setSpeed(300);
+				motorRight.setSpeed(300);
+			}
+
+		}
+		stop();
+	}
+
 	public int getColorId(String color) {
 		int id = -1;
 		switch (color) {
@@ -200,7 +324,7 @@ public class Robot2 {
 		return name;
 	}
 
-	public void findOrientations() { //currently not used
+	public void findOrientations() { // currently not used
 		int color = colorSensorSide.getColorID();
 		if (color != Color.NONE) {
 			if (orientations[0] == "") {
@@ -245,7 +369,7 @@ public class Robot2 {
 		}
 		// first index: orientation East, South, West, North
 		// second index: color red, green, blue, yellow
-		int[][] turnmatrix = { { 180, 90, 180, 90 }, { -90, 180, -90, 0 }, { 0, -90, 0, 90 }, { 90, 0, 90, 180 } };
+		int[][] turnmatrix = { { 180, -90, 180, -90 }, { 90, 180, 90, 0 }, { 0, 90, 0, -90 }, { -90, 0, -90, 180 } };
 		return turnmatrix[orientationIndex][colorIndex];
 	}
 }
