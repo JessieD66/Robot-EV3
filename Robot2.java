@@ -46,11 +46,8 @@ public class Robot2 {
 		robot.stop();
 		Delay.msDelay(500);
 		robot.turn(90);
-		for (int c = 0; c < 5; c++) {
-			robot.drive(600);
-			Delay.msDelay(500);
-			robot.toLine();
-		}
+		robot.drivecrossings(600, 5);
+		robot.distance(50, 200);
 		robot.turn(90);
 		robot.drive(200);
 		LCD.clear();
@@ -59,35 +56,78 @@ public class Robot2 {
 		robot.drive(200);
 		robot.toLine();
 		robot.routerBlue();
-		robot.drive(400);
-		robot.toLine();
-		robot.distance(-17);
-		robot.turn(-90);
-		robot.drive(400);
-		Delay.msDelay(500);
-		robot.toLine();
-		robot.liftCable();
-		robot.motorLeft.rotate(360); 
-		robot.drive(200);
-		Delay.msDelay(700);
-		robot.toLine();
-		robot.motorLeft.rotate(360); 
-		robot.motorUp.rotate(50);
+		robot.cableOne();
+		robot.cableTwo();
+		robot.turn(90);
+		robot.distance(1000, 800);
+		robot.motorLeft.rotate(-360);
+		robot.distance(1000, 800);
+		Sound.beepSequence();
 		Button.ENTER.waitForPress();
 	}
 	
+	public void cableTwo() {
+		motorLeft.rotate(-360);
+		drivecrossings(400, 2);
+		distance(-17);
+		turn(90);
+		drive(400);
+		Delay.msDelay(500);
+		toLine();
+		liftCable();
+		Delay.msDelay(7000);
+		stop();
+		motorRight.rotate(360);
+		drive(200);
+		Delay.msDelay(100);
+		drivecrossings(200, 2);
+		motorLeft.rotate(360); 
+		distance(90);
+		motorUp.rotate(50);
+		distance(-45);
+		motorUp.rotate(-120);
+	}
+
+	public void cableOne() {
+		drive(400);
+		toLine();
+		distance(-17);
+		turn(-90);
+		drive(400);
+		Delay.msDelay(500);
+		toLine();
+		liftCable();
+		Delay.msDelay(3000);
+		stop();
+		motorLeft.rotate(360); 
+		drive(200);
+		Delay.msDelay(700);
+		toLine();
+		motorLeft.rotate(360);
+		distance(90);
+		motorUp.rotate(50);
+		distance(-45);
+		motorUp.rotate(-120);
+	}
+	
+	
+	public void drivecrossings(int speed, int crossings) {
+		for (int c = 0; c < crossings; c++) {
+			drive(speed);
+			Delay.msDelay(500);
+			toLine();
+		}
+	}
+
 	public void liftCable() {
 		motorUp.rotate(120);
 		distance(300);
 		motorUp.rotate(-50);
 		driveback(500);
-		Delay.msDelay(3000);
-		stop();
 	}
 
 	public void routerRed() {
-		int routerColor = colorSensorSide.getColorID();
-		if (routerColor == Color.BLACK) {
+		if (colorSensorSide.getColorID() == Color.BLACK) {
 			Sound.buzz();
 			liftRouter();
 			turn(180);
@@ -103,7 +143,7 @@ public class Robot2 {
 			driveback(200);
 			Delay.msDelay(1000);
 			toLine();
-			motorRight.rotate(360);
+			motorRight.rotate(370);
 			distance(200);
 			turnAndDrop(toTurn("RED"));
 		}
@@ -111,9 +151,7 @@ public class Robot2 {
 
 	public void routerBlue() {
 		distance(5);
-		int routerColor = colorSensorSide.getColorID();
-		if (routerColor == Color.BLACK) {
-			LCD.drawString(routerColour(routerColor), 0, 0);
+		if (colorSensorSide.getColorID() == Color.BLACK) {
 			Sound.buzz();
 			liftRouter();
 			turn(90);
@@ -135,6 +173,13 @@ public class Robot2 {
 	}
 
 	public void distance(int angle) {
+		motorRight.rotate(angle, true);
+		motorLeft.rotate(angle);
+	}
+	
+	public void distance(int angle, int speed) {
+		motorRight.setSpeed(speed);
+		motorLeft.setSpeed(speed);
 		motorRight.rotate(angle, true);
 		motorLeft.rotate(angle);
 	}
@@ -282,7 +327,6 @@ public class Robot2 {
 			}
 			Delay.msDelay(5);
 		}
-		Sound.buzz();
 	}
 
 	public void drive(int speed) {
@@ -303,8 +347,8 @@ public class Robot2 {
 		motorLeft.setSpeed(200);
 		motorRight.setSpeed(200);
 		if (direction == 'l') {
-			motorLeft.rotate(-190, true);
-			motorRight.rotate(190);
+			motorLeft.rotate(-185, true);
+			motorRight.rotate(185);
 		} else if (direction == 'r') {
 			motorLeft.rotate(185, true);
 			motorRight.rotate(-185);
