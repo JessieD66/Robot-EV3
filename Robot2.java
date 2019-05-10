@@ -60,7 +60,7 @@ public class Robot2 {
 		robot.cableTwo();
 		robot.turn(90);
 		robot.distance(1000, 800);
-		robot.motorLeft.rotate(-360);
+		robot.motorLeft.rotate(-340);
 		robot.distance(1000, 800);
 		Sound.beepSequence();
 		Button.ENTER.waitForPress();
@@ -72,7 +72,7 @@ public class Robot2 {
 		distance(-17);
 		turn(90);
 		drive(400);
-		Delay.msDelay(500);
+		Delay.msDelay(700);
 		toLine();
 		liftCable();
 		Delay.msDelay(7000);
@@ -86,15 +86,15 @@ public class Robot2 {
 		motorUp.rotate(50);
 		distance(-45);
 		motorUp.rotate(-120);
+		distance(-90);
 	}
 
 	public void cableOne() {
 		drive(400);
 		toLine();
-		distance(-17);
-		turn(-90);
+		motorRight.rotate(-360);
 		drive(400);
-		Delay.msDelay(500);
+		Delay.msDelay(600);
 		toLine();
 		liftCable();
 		Delay.msDelay(3000);
@@ -127,10 +127,10 @@ public class Robot2 {
 	}
 
 	public void routerRed() {
-		if (colorSensorSide.getColorID() == Color.BLACK) {
+		if (routerColour(colorSensorSide.getColorID()) != "WHITE" ) {
 			Sound.buzz();
 			liftRouter();
-			turn(180);
+			turn(185);
 			distance(300);
 			turnAndDrop(toTurn("RED"));
 		} else {
@@ -143,7 +143,7 @@ public class Robot2 {
 			driveback(200);
 			Delay.msDelay(1000);
 			toLine();
-			motorRight.rotate(370);
+			motorRight.rotate(360);
 			distance(200);
 			turnAndDrop(toTurn("RED"));
 		}
@@ -151,7 +151,7 @@ public class Robot2 {
 
 	public void routerBlue() {
 		distance(5);
-		if (colorSensorSide.getColorID() == Color.BLACK) {
+		if (routerColour(colorSensorSide.getColorID()) != "WHITE" && routerColour(colorSensorSide.getColorID()) != "NONE" ) {
 			Sound.buzz();
 			liftRouter();
 			turn(90);
@@ -166,7 +166,7 @@ public class Robot2 {
 			Delay.msDelay(500);
 			toLine();
 			liftRouter();
-			turn(180);
+			turn(185);
 			distance(300);
 			turnAndDrop(toTurn("BLUE"));
 		}
@@ -195,19 +195,13 @@ public class Robot2 {
 	}
 
 	public void liftRouter() {
-		motorLeft.rotate(270, true);
-		motorRight.rotate(270);
-		Delay.msDelay(100);
-		motorRight.rotate(-380);
-		motorRight.rotate(-120, true);
-		motorLeft.rotate(-120);
+		distance(270);
+		motorRight.rotate(-360);
+		distance(-100);
 		motorUp.setSpeed(100);
-		motorUp.rotate(110);
+		motorUp.rotate(120);
 		Delay.msDelay(400);
-		motorLeft.setSpeed(130);
-		motorRight.setSpeed(130);
-		motorRight.rotate(200, true);
-		motorLeft.rotate(200);
+		distance(200, 130);
 		Delay.msDelay(360);
 		motorUp.rotate(-35);
 	}
@@ -226,10 +220,10 @@ public class Robot2 {
 			motorTurn.rotate(-20);
 			Delay.msDelay(200);
 			motorLeft.rotate(50);
-			motorUp.rotate(-120);
+			motorUp.rotate(-130);
 			motorLeft.rotate(-50);
 			motorTurn.rotate(-angle);
-			distance(-300);
+			distance(-270);
 		} else if (angle == -90) {
 			motorUp.rotate(45);
 			motorTurn.setSpeed(600);
@@ -239,10 +233,10 @@ public class Robot2 {
 			motorTurn.rotate(-20);
 			Delay.msDelay(200);
 			motorRight.rotate(50);
-			motorUp.rotate(-120);
+			motorUp.rotate(-130);
 			motorRight.rotate(-50);
 			motorTurn.rotate(-angle);
-			distance(-300);
+			distance(-270);
 		} else if (angle == 180) {
 			motorUp.rotate(35);
 			motorTurn.setSpeed(600);
@@ -253,9 +247,9 @@ public class Robot2 {
 			Delay.msDelay(200);
 			motorLeft.rotate(50);
 			motorRight.rotate(50);
-			motorUp.rotate(-110);
+			motorUp.rotate(-120);
 			motorTurn.rotate(-angle);
-			distance(-350);
+			distance(-320);
 		} else if (angle == 0) {
 			motorUp.rotate(35);
 			motorTurn.setSpeed(600);
@@ -265,11 +259,11 @@ public class Robot2 {
 			motorTurn.rotate(-20);
 			motorLeft.rotate(-50);
 			motorRight.rotate(-50);
-			motorUp.rotate(-110);
+			motorUp.rotate(-120);
 			motorTurn.rotate(-angle);
-			distance(-250);
+			distance(-220);
 		}
-		turn(-90);
+		turn(-95);
 	}
 
 	public String routerColour(int id) {
